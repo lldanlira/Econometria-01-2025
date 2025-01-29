@@ -1,4 +1,5 @@
-#Metodo 2
+#Ejercicio 4
+#Metodología 2
 #Segundo Ejercicio (Haciendo uso de Data set)
 install.packages("AER")
 library(AER)
