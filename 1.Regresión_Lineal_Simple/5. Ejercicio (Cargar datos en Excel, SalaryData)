@@ -1,0 +1,33 @@
+#Metodología 3
+#Ejercicio 5
+#Cargando archivo de excel 
+#Para la lectura de excel
+install.packages("readxl")
+library(readxl)
+library(AER)
+library(MASS)
+file.choose()
+ruta_excel <-"C:\\Users\\Dani\\Desktop\\Salary_Data.xlsx"
+salario <- read_excel("C:\\Users\\Dani\\Desktop\\Salary_Data.xlsx") 
+View(salario)
+head(salario)
+mod_reg<- lm(salario$Salary ~ salario$YearsExperience)
+mod_reg2<- lm(Salary ~ YearsExperience, data=salario)
+summary(mod_reg)
+#Haciendo uso de nuevas funciones
+install.packages("tidyverse")
+install.packages("boot")
+install.packages("car")
+install.packages("QuantPsyc")
+install.packages("ggplot2")
+install.packages("carData")
+library(tidyverse)
+library(car)
+library(boot)
+library(QuantPsyc)
+library(ggplot2)
+
+#Haciendo Gráfica
+grafica1= ggplot(salario, aes(Salary,YearsExperience))
+grafica1 + geom_point()
+grafica1 + geom_point()+geom_smooth(method = "lm", color="blue")
