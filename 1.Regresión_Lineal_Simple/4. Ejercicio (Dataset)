@@ -1,0 +1,63 @@
+#Metodo 2
+#Segundo Ejercicio (Haciendo uso de Data set)
+install.packages("AER")
+library(AER)
+install.packages("dslabs")
+library(dslabs)
+#Haremos uso deL Data Set CASchools
+data("CASchools")
+CASchools
+head(CASchools)
+class(CASchools)
+names(CASchools)
+#Definiendo Variables
+Prom_stvste<- CASchools$students/CASchools$teachers
+Prom_stvste
+prom_mater <- (CASchools$read + CASchools$math)/2
+prom_mater
+#Escribir lo siguiente
+#Calculando la media de los datos
+help("mean")
+med_stvste <-mean(Prom_stvste)
+med_stvste
+med_mater <-mean(prom_mater)
+med_mater
+#Calculando la desviación estándar
+help(sd)
+sd_stvste<-sd(Prom_stvste)
+sd_stvste
+sd_mater <- sd(prom_mater)
+sd_mater
+#calcular cuantiles
+quantiles <- c(0.10, 0.25, 0.4, 0.5, 0.6, 0.75, 0.9)
+quant_stvste <-quantile(Prom_stvste, quantiles)
+quant_stvste
+quant_mater <- quantile(prom_mater,quantiles)
+quant_mater
+#Incluyendo todo en un data frame
+DistributionsSummary <- data.frame(Promedio = c(med_stvste, med_mater),
+                                   Desviación_Estándar = c(sd_stvste, sd_mater),
+                                   quantiles = rbind(quant_stvste, quant_mater))
+DistributionsSummary
+
+#Imprimiendo la gráfica
+plot(prom_mater ~ Prom_stvste,
+     data = CASchools,
+     main = "Gráfica de Promedio de maestros vs Calificaciones",
+     xlab= "Promedio de estudiantes por maestro (x)",
+     ylab= "Promedio de materias matemáticas y lectura (y)")
+#Obtener la correlación lineal (R)
+cor(Prom_stvste, prom_mater)
+help(cor)
+#Obteniendo variables de la ecuación del modelo de regresión lineal
+help("attach")
+attach(CASchools)
+#Obteniendo valor de B1
+beta_1 <- sum((prom_mater-mean(prom_mater))*(Prom_stvste-mean(prom_mater)))/sum((Prom_stvste-mean(Prom_stvste))^2)
+beta_1
+#Obteniendo valor de B0
+beta_0 <- mean(prom_mater)-beta_1*mean(Prom_stvste)
+beta_0
+#Estimar el modelo de regresión lineal 
+linear_model <- lm(prom_mater~Prom_stvste, data=CASchools)
+linear_model
