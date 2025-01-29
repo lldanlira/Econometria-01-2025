@@ -1,5 +1,5 @@
-#Metodología 3
 #Ejercicio 5
+#Metodología 3
 #Cargando archivo de excel 
 #Para la lectura de excel
 install.packages("readxl")
