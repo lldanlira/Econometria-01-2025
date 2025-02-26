@@ -1,0 +1,68 @@
+#Ejercicio de Autocorrelación Serial 
+library("quantmod")
+library("tseries")
+#Cargar nuevas paqueterías
+install.packages("fImport")
+install.packages("lmtest")
+library('fImport')
+library('forecast')
+library('TSA')
+library('lmtest')
+#Integrar variables para trabajar
+getSymbols("EXCHUS",src="FRED") #Tipo de Cambio
+getSymbols("UNRATE", src="FRED") #Tasa de desempleo
+getSymbols("CHNCPIALLMINMEI", src="FRED") #IPC
+getSymbols("CPIAUCSL", src="FRED") #IPC
+#Definiendo fechas
+USD_CHN=EXCHUS["2015-01::2022-12"]
+IPC_Chin=CHNCPIALLMINMEI["2015-01::2022-12"]
+IPC_USA=CPIAUCSL["2015-01::2022-12"]
+Paro_USA=UNRATE["2015-01::2022-12"]
+#Graficando
+plot(USD_CHN,type="l")
+plot(IPC_Chin,type="l")
+plot(IPC_USA,type="l")
+plot(Paro_USA,type="l")
+#Definiendo un Data FRAME
+variables = data.frame(merge(USD_CHN, IPC_Chin,IPC_USA,Paro_USA))
+variables
+View(variables)
+#Definir el modelo de regresión lineal
+Modelo_lin <- lm(USD_CHN~IPC_Chin+IPC_USA, data= variables)
+#Resumen del Modelo
+summary(Modelo_lin)
+#Residuales
+res <- Modelo_lin$residuals
+plot(Modelo_lin)
+#Graficando residuos
+plot(res[,1], type="l")
+
+#Definir Hipótesis 
+# H0: NO HAY AUTOCORRELACIÓN
+#Ha : HAY AUTOCORRELACIÓN 
+
+#Criterio para evaluación de la hipótesis es de la siguiente forma:
+#P value < 0.05 - Entonces se rechaza H0
+#Entonces se rechazaría la hipótesis de no autocorrelación
+
+#Pvalor = 0.0001165
+#0.0001165 < 0.05
+#Se rechaza la H0, quiere decir que existe autocorrelación entre lo que sería el IPC China y el IPC de EUA con respecto al TC 
+
+library('lmtest')
+#Redefiniendo valores 
+usd_chin <- as.ts(USD_CHN)
+ipc_chin <- as.ts(IPC_Chin)
+ipc_usa <- as.ts(IPC_USA)
+help("as.ts")
+Model_lin_2 <- lm(usd_chin~ipc_chin+ipc_usa)
+summary(Model_lin_2)
+#Prueba de Durbin Watson
+dwtest(Model_lin_2)
+
+#Prueba de Breusch - Godfrey 
+bgtest(Model_lin_2)
+
+
+#Prueba L jung - Box
+Box.test(residuals(Model_lin_2), type = "Ljung-Box")
